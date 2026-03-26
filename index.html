@@ -1,94 +1,20 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lotte World Insight</title>
-    <!-- Tailwind CSS for styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
-        
-        body { 
-            font-family: 'Noto Sans KR', sans-serif; 
-            background-color: #f1f5f9;
-        }
+import React, { useState, useMemo } from 'react';
+import { 
+  Star, Zap, Clock, Info, Search, Filter, MapPin, 
+  ChevronDown, ChevronUp, AlertCircle, Users, Ticket, 
+  UserCheck, Ruler, CreditCard, Monitor, Construction,
+  Sparkles, MousePointer2
+} from 'lucide-react';
 
-        .custom-shadow {
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-        }
+const App = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState('전체');
+  const [selectedCategory, setSelectedCategory] = useState('전체');
+  const [expandedId, setExpandedId] = useState(null);
 
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  const categories = ['전체', '스릴', '패밀리', '롤러코스터', '키즈', '다크라이드', '체험', '시어터', '슈팅', '모노레일'];
+  const locations = ['전체', '어드벤처 4F', '어드벤처 3F', '어드벤처 2F', '어드벤처 1F', '언더랜드(B1)', '키디존', '매직아일랜드', '메이플 아일랜드'];
 
-        /* Card Expansion Animation */
-        .details-panel {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out, opacity 0.2s;
-            opacity: 0;
-        }
-        .is-expanded .details-panel {
-            max-height: 1000px;
-            opacity: 1;
-            transition: max-height 0.5s ease-in, opacity 0.4s;
-        }
-        
-        .card-container {
-            transition: transform 0.2s, border-color 0.2s;
-        }
-        .is-expanded.card-container {
-            border-color: #ef4444;
-            transform: translateY(-2px);
-        }
-
-        /* SVG Icon Helpers */
-        .icon-sm { width: 14px; height: 14px; }
-    </style>
-</head>
-<body class="max-w-lg mx-auto min-h-screen bg-slate-50 pb-10">
-
-    <!-- Header Section -->
-    <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 px-5 py-4">
-        <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center text-white font-black text-lg">L</div>
-                <h1 class="font-black text-slate-900 tracking-tight text-xl uppercase italic">Insight</h1>
-            </div>
-            <div id="itemCount" class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded-md uppercase tracking-wider">
-                0 Items
-            </div>
-        </div>
-
-        <!-- Search Input -->
-        <div class="relative group">
-            <input 
-                type="text" 
-                id="searchBar"
-                placeholder="어트랙션 이름을 입력하세요..." 
-                class="w-full bg-slate-100 border-none rounded-2xl py-3.5 pl-5 pr-12 text-sm focus:ring-2 focus:ring-red-500/20 outline-none transition-all placeholder:text-slate-400 font-medium"
-            >
-            <div class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                </svg>
-            </div>
-        </div>
-
-        <!-- Filter Pills -->
-        <div id="categoryContainer" class="flex gap-2 overflow-x-auto hide-scrollbar mt-4 pb-1">
-            <!-- Dynamically injected categories -->
-        </div>
-    </header>
-
-    <!-- Main Content Area -->
-    <main class="px-5 mt-6">
-        <div id="rideList" class="space-y-4">
-            <!-- Dynamically injected cards -->
-        </div>
-    </main>
-
-    <script>
   const rides = [
     // 4F
     { 
@@ -497,149 +423,289 @@
   ];
 
 
-        const CATEGORIES = ["전체", "스릴", "다크라이드", "패밀리", "키즈", "체험"];
+  const filteredRides = useMemo(() => {
+    return rides.filter(ride => {
+      const matchesSearch = ride.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesLocation = selectedLocation === '전체' || ride.location.includes(selectedLocation);
+      const matchesCategory = selectedCategory === '전체' || ride.category === selectedCategory;
+      return matchesSearch && matchesLocation && matchesCategory;
+    });
+  }, [searchTerm, selectedLocation, selectedCategory]);
 
-        // --- 2. STATE MANAGEMENT ---
-        let currentFilter = "전체";
-        let searchQuery = "";
-        let expandedId = null;
+  const StatBar = ({ icon: Icon, label, value, colorClass }) => (
+    <div className="flex flex-col gap-1.5 flex-1 min-w-0">
+      <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+        <Icon size={12} className={colorClass} />
+        {label}
+      </div>
+      <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+        {value === "?" ? (
+          <div className="h-full bg-slate-200 w-full animate-pulse" />
+        ) : (
+          <div 
+            className={`h-full transition-all duration-700 ease-out ${colorClass.replace('text-', 'bg-')}`} 
+            style={{ width: `${(value / 5) * 100}%` }} 
+          />
+        )}
+      </div>
+      <span className="text-[10px] font-bold text-slate-500">{value} / 5</span>
+    </div>
+  );
 
-        // --- 3. CORE FUNCTIONS ---
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans pb-12">
+      {/* Header Section */}
+      <header className="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div className="max-w-md mx-auto p-4 space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 bg-gradient-to-br from-red-500 to-rose-600 rounded-xl flex items-center justify-center text-white font-black shadow-lg shadow-red-200 ring-2 ring-white">L</div>
+              <h1 className="text-xl font-black text-slate-800 tracking-tighter leading-none">
+                LOTTE WORLD<br />
+                <span className="text-sm font-bold text-red-500 uppercase tracking-[0.2em]">Insight Guide</span>
+              </h1>
+            </div>
+            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-600 bg-slate-100 px-3 py-2 rounded-xl">
+               <MapPin size={14} className="text-red-500" />
+               <select 
+                 className="bg-transparent outline-none cursor-pointer pr-1" 
+                 value={selectedLocation} 
+                 onChange={(e) => setSelectedLocation(e.target.value)}
+               >
+                 {locations.map(loc => <option key={loc} value={loc}>{loc}</option>)}
+               </select>
+            </div>
+          </div>
+          
+          <div className="relative group">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-red-500 transition-colors" size={18} />
+            <input 
+              type="text" 
+              placeholder="어트랙션 검색..." 
+              className="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-slate-100 border-2 border-transparent focus:bg-white focus:border-red-400 focus:ring-4 focus:ring-red-50 transition-all outline-none text-[15px] font-medium"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
 
-        function init() {
-            renderCategories();
-            renderList();
+          <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar -mx-4 px-4">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-4 py-2 rounded-xl whitespace-nowrap text-xs font-bold border-2 transition-all ${
+                  selectedCategory === cat 
+                    ? 'bg-slate-900 text-white border-slate-900 shadow-md' 
+                    : 'bg-white text-slate-500 border-slate-100 hover:border-slate-200'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+      </header>
 
-            // Search Event
-            document.getElementById('searchBar').addEventListener('input', (e) => {
-                searchQuery = e.target.value.toLowerCase();
-                renderList();
-            });
-        }
+      {/* Main Content Area */}
+      <main className="max-w-md mx-auto p-4 pt-6 space-y-6">
+        <div className="flex justify-between items-center px-1">
+          <div className="flex items-center gap-2">
+            <Sparkles size={16} className="text-amber-500" />
+            <span className="text-xs font-black text-slate-400 uppercase tracking-widest">{filteredRides.length} Attractions Found</span>
+          </div>
+        </div>
 
-        function renderCategories() {
-            const container = document.getElementById('categoryContainer');
-            container.innerHTML = CATEGORIES.map(cat => `
-                <button 
-                    onclick="setCategory('${cat}')"
-                    class="px-5 py-2 rounded-full whitespace-nowrap text-[13px] font-bold border transition-all ${currentFilter === cat ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-500 border-slate-200'}"
-                >
-                    ${cat}
-                </button>
-            `).join('');
-        }
+        <div className="grid gap-5">
+          {filteredRides.length > 0 ? filteredRides.map((ride) => {
+            const isExpanded = expandedId === ride.id;
+            
+            // Dynamic card styling based on traits
+            let cardClasses = "bg-white border-slate-200";
+            let accentColor = "text-red-500";
+            
+            if (ride.info.kidsOnly) cardClasses = "bg-blue-50/30 border-blue-200";
+            if (ride.info.paid) cardClasses = "bg-emerald-50/30 border-emerald-200"; 
+            if (ride.info.is3D) cardClasses = "bg-indigo-50/30 border-indigo-200";
+            if (ride.info.isPlanned) cardClasses = "bg-slate-100 border-slate-300 grayscale opacity-80";
+            if (isExpanded) cardClasses += " ring-4 ring-slate-100 border-slate-900";
 
-        window.setCategory = (cat) => {
-            currentFilter = cat;
-            renderCategories();
-            renderList();
-        };
-
-        window.toggleCard = (id) => {
-            expandedId = (expandedId === id) ? null : id;
-            renderList();
-        };
-
-        function renderList() {
-            const listElement = document.getElementById('rideList');
-            const filtered = RIDES.filter(ride => {
-                const matchesCat = currentFilter === "전체" || ride.category === currentFilter;
-                const matchesSearch = ride.name.toLowerCase().includes(searchQuery);
-                return matchesCat && matchesSearch;
-            });
-
-            document.getElementById('itemCount').innerText = `${filtered.length} ATTRACTS`;
-
-            if (filtered.length === 0) {
-                listElement.innerHTML = `
-                    <div class="py-20 text-center text-slate-400">
-                        <p class="text-sm font-medium">검색 결과가 없습니다.</p>
+            return (
+              <div 
+                key={ride.id} 
+                className={`rounded-[2rem] overflow-hidden shadow-sm border transition-all duration-300 cursor-pointer ${cardClasses} hover:shadow-xl active:scale-[0.98]`}
+                onClick={() => setExpandedId(isExpanded ? null : ride.id)}
+              >
+                <div className="p-5">
+                  <div className="flex justify-between items-start gap-4">
+                    <div className="flex-1 space-y-2">
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <span className="text-[10px] font-black px-2 py-0.5 rounded-lg bg-white shadow-sm text-slate-500 border border-slate-100 uppercase tracking-tighter">
+                          {ride.location}
+                        </span>
+                        {ride.info.isPopular && <span className="text-xs">🔥</span>}
+                        {ride.info.isPlanned && (
+                          <span className="text-[10px] font-black px-2 py-0.5 rounded-lg bg-slate-800 text-white flex items-center gap-1">
+                            <Construction size={10}/> 오픈 예정
+                          </span>
+                        )}
+                        {ride.info.paid && (
+                          <span className="text-[10px] font-black px-2 py-0.5 rounded-lg bg-emerald-600 text-white flex items-center gap-1 shadow-sm shadow-emerald-100">
+                            <CreditCard size={10}/> 유료 시설
+                          </span>
+                        )}
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-xl font-black text-slate-800 tracking-tight leading-tight">{ride.name}</h3>
+                        <div className="p-1 rounded-full bg-slate-100 text-slate-400">
+                          {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                        </div>
+                      </div>
                     </div>
-                `;
-                return;
-            }
+                  </div>
 
-            listElement.innerHTML = filtered.map(ride => {
-                const isExpanded = expandedId === ride.id;
-                return `
-                <div class="card-container bg-white rounded-3xl border border-slate-200 custom-shadow overflow-hidden ${isExpanded ? 'is-expanded ring-1 ring-red-500/20' : ''}">
-                    <div class="p-5 cursor-pointer" onclick="toggleCard(${ride.id})">
-                        <div class="flex justify-between items-start mb-3">
-                            <div>
-                                <div class="flex items-center gap-2 mb-1.5">
-                                    <span class="text-[9px] font-black bg-slate-100 text-slate-500 px-2 py-0.5 rounded uppercase tracking-tighter border border-slate-200">${ride.location}</span>
-                                    ${ride.isHot ? '<span class="text-[9px] font-black text-red-600 italic tracking-tighter uppercase">★ Top Pick</span>' : ''}
-                                </div>
-                                <h3 class="text-lg font-black text-slate-900 tracking-tight">${ride.name}</h3>
-                            </div>
-                            <div class="p-1.5 rounded-full ${isExpanded ? 'bg-red-50 text-red-500' : 'bg-slate-50 text-slate-300'}">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                </svg>
-                            </div>
+                  <p className={`text-sm text-slate-500 mt-3 leading-relaxed font-medium ${!isExpanded && 'line-clamp-1'}`}>
+                    {ride.description}
+                  </p>
+
+                  <div className="flex gap-4 mt-5 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                    <StatBar icon={Star} label="Fun" value={ride.fun} colorClass="text-amber-500" />
+                    <StatBar icon={Zap} label="Thrill" value={ride.thrill} colorClass="text-purple-500" />
+                    <StatBar icon={Clock} label="Wait" value={ride.wait} colorClass="text-red-500" />
+                  </div>
+
+                  {isExpanded && (
+                    <div className="mt-5 pt-5 border-t border-slate-100 space-y-5 animate-in fade-in slide-in-from-top-4 duration-500">
+                      <div className="flex flex-wrap gap-2">
+                        {ride.tags?.map(tag => (
+                          <span key={tag} className="text-[11px] font-bold text-slate-500 bg-white border border-slate-100 px-3 py-1 rounded-full shadow-sm">
+                            #{tag}
+                          </span>
+                        ))}
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-white border border-slate-100 shadow-sm">
+                          <div className="p-1.5 bg-blue-50 rounded-lg text-blue-500">
+                            <Ruler size={16} />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-none mb-1">Height</span>
+                            <span className="text-xs font-black text-slate-700">{ride.height || "제한 없음"}</span>
+                          </div>
                         </div>
-
-                        <!-- Mini Stats -->
-                        <div class="grid grid-cols-3 gap-3 bg-slate-50/80 p-3 rounded-2xl border border-slate-100">
-                            ${renderStat('FUN', ride.fun, 'bg-yellow-400')}
-                            ${renderStat('THRILL', ride.thrill, 'bg-purple-500')}
-                            ${renderStat('WAIT', ride.wait, 'bg-red-500')}
+                        <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-white border border-slate-100 shadow-sm">
+                          <div className="p-1.5 bg-rose-50 rounded-lg text-rose-500">
+                            <AlertCircle size={16} />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-none mb-1">Weight</span>
+                            <span className="text-xs font-black text-slate-700">{ride.weight || "상관 없음"}</span>
+                          </div>
                         </div>
+                      </div>
 
-                        <!-- Description (Always visible brief) -->
-                        <p class="mt-3.5 text-xs text-slate-500 leading-relaxed font-medium ${isExpanded ? '' : 'line-clamp-1'}">
-                            ${ride.desc}
+                      <div className="flex flex-wrap gap-2">
+                        {ride.info.reservation && (
+                          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600 text-white text-[11px] font-black shadow-md shadow-indigo-100">
+                            <Ticket size={14}/> 탑승예약제(매직패스)
+                          </div>
+                        )}
+                        {ride.info.single && (
+                          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-100 text-emerald-800 text-[11px] font-black border border-emerald-200">
+                            <UserCheck size={14}/> 싱글라이더 운영
+                          </div>
+                        )}
+                        {ride.info.is3D && (
+                          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 text-white text-[11px] font-black">
+                            <Monitor size={14}/> 3D 상영관 시설
+                          </div>
+                        )}
+                        {ride.info.phobia && (
+                          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-100 text-amber-800 text-[11px] font-black border border-amber-200">
+                            <AlertCircle size={14}/> 고소공포 주의
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="p-4 bg-slate-900 rounded-3xl text-slate-100 ring-4 ring-slate-50">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Info size={16} className="text-red-400" />
+                          <span className="text-xs font-black uppercase tracking-widest text-slate-400">Pro Tip & Guide</span>
+                        </div>
+                        <p className="text-xs leading-relaxed font-medium">
+                          {ride.details}
                         </p>
-
-                        <!-- Expanded Content -->
-                        <div class="details-panel ${isExpanded ? 'mt-5' : ''}">
-                            <div class="pt-5 border-t border-dashed border-slate-200 space-y-4">
-                                <div class="grid grid-cols-2 gap-2">
-                                    <div class="bg-slate-50 p-3 rounded-xl">
-                                        <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">신장 제한</p>
-                                        <p class="text-xs font-bold text-slate-700">${ride.height}</p>
-                                    </div>
-                                    <div class="bg-slate-50 p-3 rounded-xl">
-                                        <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">기타 제한</p>
-                                        <p class="text-xs font-bold text-slate-700">${ride.restrictions}</p>
-                                    </div>
-                                </div>
-                                <div class="bg-red-50 p-4 rounded-2xl border border-red-100">
-                                    <div class="flex items-center gap-1.5 mb-1.5 text-red-600">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3">
-                                            <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a.75.75 0 0 0 0 1.5h.253a.25.25 0 0 1 .244.304l-.459 2.066A1.75 1.75 0 0 0 10.747 15H11a.75.75 0 0 0 0-1.5h-.253a.25.25 0 0 1-.244-.304l.459-2.066A1.75 1.75 0 0 0 9.253 9H9Z" clip-rule="evenodd" />
-                                        </svg>
-                                        <span class="text-[10px] font-black uppercase">User Insight Tips</span>
-                                    </div>
-                                    <p class="text-[11px] text-slate-700 leading-relaxed font-medium">
-                                        ${ride.tips}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                      </div>
                     </div>
+                  )}
                 </div>
-                `;
-            }).join('');
-        }
+              </div>
+            );
+          }) : (
+            <div className="py-20 flex flex-col items-center justify-center text-slate-400 space-y-4">
+              <Search size={48} className="opacity-20" />
+              <p className="font-bold">검색 결과가 없습니다.</p>
+              <button 
+                onClick={() => {setSearchTerm(''); setSelectedCategory('전체'); setSelectedLocation('전체');}}
+                className="text-red-500 text-sm font-black underline"
+              >
+                필터 초기화
+              </button>
+            </div>
+          )}
+        </div>
 
-        function renderStat(label, val, barColor) {
-            const percent = (val / 5) * 100;
-            return `
-                <div>
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="text-[8px] font-black text-slate-400 tracking-wider uppercase">${label}</span>
-                        <span class="text-[9px] font-black text-slate-800 tracking-tighter">${val}</span>
-                    </div>
-                    <div class="h-1 w-full bg-slate-200 rounded-full overflow-hidden">
-                        <div class="${barColor} h-full" style="width: ${percent}%"></div>
-                    </div>
-                </div>
-            `;
-        }
+        {/* Legend / Info Section */}
+        <div className="mt-8 pt-8 border-t border-slate-200">
+          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-[2.5rem] p-6 text-white shadow-2xl">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2.5 bg-white/10 rounded-2xl backdrop-blur-md">
+                <Info size={20} className="text-red-400" />
+              </div>
+              <div className="flex-1">
+                <p className="text-[10px] font-black text-red-400 uppercase tracking-[0.2em] mb-1">Guide Information</p>
+                <h4 className="text-lg font-black tracking-tight">가이드 범례 및 참고</h4>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-y-4 gap-x-2">
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 rounded-full bg-blue-500 ring-4 ring-blue-500/20"></div>
+                <span className="text-xs font-bold text-slate-300">어린이 전용</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 rounded-full bg-emerald-500 ring-4 ring-emerald-500/20"></div>
+                <span className="text-xs font-bold text-slate-300">유료 시설</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 rounded-full bg-indigo-500 ring-4 ring-indigo-500/20"></div>
+                <span className="text-xs font-bold text-slate-300">3D/시어터</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-red-500 text-sm">🔥</span>
+                <span className="text-xs font-bold text-slate-300">최고 인기 시설</span>
+              </div>
+            </div>
+            
+            <div className="mt-6 pt-6 border-t border-white/5">
+              <p className="text-[10px] leading-relaxed text-slate-400 font-medium">
+                본 정보는 현장 상황에 따라 변동될 수 있습니다. 특히 매직패스(예약제)는 롯데월드 어드벤처 앱을 통해 실시간 확인이 필요합니다.
+              </p>
+            </div>
+          </div>
+        </div>
+      </main>
+      
+      {/* Floating Action Hint */}
+      {!expandedId && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md border border-slate-200 px-5 py-3 rounded-full shadow-2xl flex items-center gap-2 animate-bounce pointer-events-none">
+          <MousePointer2 size={14} className="text-red-500" />
+          <span className="text-[11px] font-black text-slate-600 uppercase tracking-widest">Tap to view details</span>
+        </div>
+      )}
+    </div>
+  );
+};
 
-        // --- 4. START APP ---
-        window.onload = init;
-    </script>
-</body>
-</html>
+export default App;
