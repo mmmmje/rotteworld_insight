@@ -16,7 +16,6 @@ const App = () => {
   const locations = ['전체', '어드벤처 4F', '어드벤처 3F', '어드벤처 2F', '어드벤처 1F', '언더랜드(B1)', '키디존', '매직아일랜드', '메이플 아일랜드'];
 
   const rides = [
-    // 4F
     { 
       id: 1, name: "파라오의 분노", location: "어드벤처 4F", type: "멀티모션 다크라이드", category: "다크라이드", 
       fun: 4.5, thrill: 3.5, wait: 5, 
@@ -44,7 +43,6 @@ const App = () => {
       info: { reservation: false, single: false, kidsOnly: false, phobia: false, paid: false, is3D: true, isPopular: false },
       details: "광활한 우주 영상을 감상하며 즐기는 몰입형 시어터 시설입니다. 좌석의 움직임은 진동 제외 거의 존재하지 않습니다."
     },
-    // 3F
     { 
       id: 4, name: "콩 X 고질라: 더 라이드", location: "어드벤처 3F", type: "다이나믹 라이드", category: "다크라이드", 
       fun: "?", thrill: "?", wait: "?", 
@@ -91,7 +89,6 @@ const App = () => {
       info: { reservation: false, single: false, kidsOnly: false, phobia: false, paid: false, is3D: false, isPopular: false },
       details: "성인 및 청소년용 범퍼카입니다."
     },
-    // 1F
     { 
       id: 9, name: "신밧드의 모험", location: "어드벤처 1F", type: "보트 라이드", category: "다크라이드", 
       fun: 4, thrill: 2, wait: 2.5, 
@@ -218,7 +215,6 @@ const App = () => {
       info: { reservation: false, single: false, kidsOnly: false, phobia: false, paid: true, is3D: false, isPopular: false },
       details: "유료 전시입니다."
     },
-    // 언더랜드 B1
     { 
       id: 23, name: "와일드 윙/정글/밸리", location: "언더랜드(B1)", type: "4D 라이드", category: "패밀리", 
       fun: 4, thrill: 2.5, wait: 3, 
@@ -237,7 +233,6 @@ const App = () => {
       info: { reservation: false, single: false, kidsOnly: false, phobia: false, paid: false, is3D: true, isPopular: false },
       details: "순위가 발표됩니다. 4D 안경과 총을 지급해줍니다."
     },
-    // 키디존
     { 
       id: 25, name: "언더씨킹덤", location: "키디존", type: "어린이 놀이터", category: "키즈", 
       fun: 4, thrill: 0.5, wait: 2, 
@@ -310,7 +305,6 @@ const App = () => {
       info: { reservation: false, single: false, kidsOnly: true, phobia: false, paid: false, is3D: false, isPopular: false },
       details: "공연 시간을 확인하세요."
     },
-    // 매직아일랜드
     { 
       id: 35, name: "아트란티스", location: "매직아일랜드", type: "급발진 코스터", category: "스릴", 
       fun: 5, thrill: 5, wait: 5, 
@@ -392,7 +386,6 @@ const App = () => {
       info: { reservation: false, single: false, kidsOnly: false, phobia: false, paid: false, is3D: false, isPopular: false },
       details: "풍경이 시원합니다."
     },
-    // 메이플 아일랜드 (예정)
     { 
       id: 100, name: "스톤 익스프레스", location: "메이플 아일랜드", type: "패밀리 코스터", category: "패밀리", 
       fun: "?", thrill: "?", wait: "?", 
@@ -421,7 +414,6 @@ const App = () => {
       details: "보트를 타고 계속 좌우로 회전하는 보트 라이드입니다. 스릴은 낮을 걸로 보입니다."
     }
   ];
-
 
   const filteredRides = useMemo(() => {
     return rides.filter(ride => {
