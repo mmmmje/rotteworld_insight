@@ -1,1 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOTTE WORLD INSIGHT</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div id="root"></div>
 
+    <script type="text/babel">
+        // 님이 작성하신 React 코드를 브라우저용으로 살짝 변형
+        const { useState } = React;
+        // 아이콘 컴포넌트들을 미리 정의 (Lucide 사용법 대응)
+        const Icon = ({ name, size = 16, className = "" }) => {
+            return <i data-lucide={name} style={{ width: size, height: size }} className={className}></i>;
+        };
+
+        const App = () => {
+            const [searchTerm, setSearchTerm] = useState('');
+            const [selectedLocation, setSelectedLocation] = useState('전체');
+            const [selectedCategory, setSelectedCategory] = useState('전체');
+            const [expandedId, setExpandedId] = useState(null);
+
+            // --- 님이 주신 데이터 그대로 유지 ---
+            const categories = ['전체', '스릴', '패밀리', '롤러코스터', '키즈', '다크라이드', '체험', '시어터', '슈팅', '모노레일'];
+            const locations = ['전체', '어드벤처 4F', '어드벤처 3F', '어드벤처 2F', '어드벤처 1F', '언더랜드(B1)', '키디존', '매직아일랜드', '메이플 아일랜드'];
+            const rides = [
+                { id: 1, name: "파라오의 분노", location: "어드벤처 4F", category: "다크라이드", fun: 4.5, thrill: 3.5, wait: 5, description: "정교한 이집트 신전 내부를 지프차로 탐험하는 모험.", tags: ["가족", "어드벤처"], height: "110cm 이상", info: { isPopular: true }, details: "점검 시간 확인 필요." },
+                { id: 7, name: "후렌치 레볼루션", location: "어드벤처 2F", category: "스릴", fun: 4.5, thrill: 4.5, wait: 4.5, description: "360도 회전 코스터.", info: { isPopular: true, reservation: true }, height: "120cm 이상" },
+                { id: 35, name: "아트란티스", location: "매직아일랜드", category: "스릴", fun: 5, thrill: 5, wait: 5, description: "시속 72km 급발진 코스터.", info: { isPopular: true, reservation: true }, height: "135cm ~ 190cm" }
+                // ... 나머지 데이터도 여기에 넣으시면 됩니다.
+            ];
+
+            // 필터링 로직
+            const filteredRides = rides.filter(ride => {
+                const matchesSearch = ride.name.includes(searchTerm);
+                const matchesLocation = selectedLocation === '전체' || ride.location.includes(selectedLocation);
+                const matchesCategory = selectedCategory === '전체' || ride.category === selectedCategory;
+                return matchesSearch && matchesLocation && matchesCategory;
+            });
+
+            // 아이콘 렌더링을 위한 처리
+            React.useEffect(() => {
+                lucide.createIcons();
+            }, [expandedId, filteredRides]);
+
+            return (
+                <div className="min-h-screen bg-slate-50 pb-10">
+                    <header className="bg-white p-4 sticky top-0 z-10 border-b">
+                        <h1 className="text-xl font-black text-red-500 mb-4">LOTTE WORLD INSIGHT</h1>
+                        <input 
+                            className="w-full p-3 bg-slate-100 rounded-xl outline-none" 
+                            placeholder="검색..." 
+                            onChange={(e) => setSearchTerm(e.target.value)} 
+                        />
+                    </header>
+                    <div className="p-4 space-y-4">
+                        {filteredRides.map(ride => (
+                            <div key={ride.id} className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100" onClick={() => setExpandedId(expandedId === ride.id ? null : ride.id)}>
+                                <div className="flex justify-between items-center">
+                                    <h3 className="font-bold text-lg">{ride.name} {ride.info?.isPopular && '🔥'}</h3>
+                                    <Icon name={expandedId === ride.id ? "chevron-up" : "chevron-down"} />
+                                </div>
+                                <p className="text-sm text-slate-500 mt-1">{ride.description}</p>
+                                {expandedId === ride.id && (
+                                    <div className="mt-4 p-3 bg-slate-50 rounded-lg text-xs leading-relaxed">
+                                        <p>📍 위치: {ride.location}</p>
+                                        <p>📏 키 제한: {ride.height}</p>
+                                        <p className="mt
