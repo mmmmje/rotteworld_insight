@@ -7,26 +7,26 @@ const App = () => {
   const [selectedCategory, setSelectedCategory] = useState('전체');
   const [expandedId, setExpandedId] = useState(null);
 
-  const categories = ['전체', '스릴', '어드벤처', '다크라이드', '패밀리', '키즈', '체험'];
+  const categories = ['전체', '스릴', '패밀리', '롤러코스터', '키즈', '다크라이드', '체험', '시어터', '슈팅', '모노레일'];
   const locations = ['전체', '어드벤처 4F', '어드벤처 3F', '어드벤처 2F', '어드벤처 1F', '언더랜드(B1)', '키디존', '매직아일랜드', '메이플 아일랜드'];
 
   const rides = [
     // 4F
     { 
-      id: 1, name: "파라오의 분노", location: "어드벤구 4F", type: "멀티모션 다크라이드", category: "어드벤처", 
-      fun: 4.5, thrill: 4, wait: 5, 
+      id: 1, name: "파라오의 분노", location: "어드벤처 4F", type: "멀티모션 다크라이드", category: "다크라이드", 
+      fun: 4.5, thrill: 3.5, wait: 5, 
       description: "정교한 이집트 신전 내부를 지프차로 탐험하는 모험.",
-      tags: ["예약제", "가족", "어드벤처"], 
+      tags: ["가족", "어드벤처"], 
       height: "110cm 이상", weight: null,
-      info: { reservation: true, single: false, kidsOnly: false, phobia: false, paid: false, is3D: false, isPopular: true },
-      details: "실제 보물을 찾는 듯한 정교한 세트장이 일품입니다."
+      info: { reservation: false, single: false, kidsOnly: false, phobia: false, paid: false, is3D: false, isPopular: true },
+      details: "실제 보물을 찾는 듯한 정교한 세트장이 일품입니다. 매일 오후 2시 30분부터 3시 30분까지 점검을 합니다. 싱글라이더가 사라졌습니다."
     },
     { 
-      id: 2, name: "풍선비행", location: "어드벤처 4F", type: "공중 모노레일(열기구)", category: "패밀리", 
-      fun: 2.5, thrill: 1, wait: 5, 
+      id: 2, name: "풍선비행", location: "어드벤처 4F", type: "공중궤도 라이드(공중 모노레일)", category: "패밀리", 
+      fun: 2.5, thrill: 1.5, wait: 4.5, 
       description: "하늘 위에서 롯데월드 전체를 조망하는 낭만적인 비행.",
       tags: ["고소공포주의", "뷰맛집"], 
-      height: "6세 이상(미만 시 보호자 동반)", weight: null,
+      height: null, weight: null,
       info: { reservation: false, single: false, kidsOnly: false, phobia: true, paid: false, is3D: false, isPopular: true },
       details: "상당히 높은 곳에서 이동하므로 고소공포증이 있다면 주의하세요."
     },
@@ -37,11 +37,11 @@ const App = () => {
       tags: ["시어터", "우주", "영상"], 
       height: "110cm 이상", weight: null,
       info: { reservation: false, single: false, kidsOnly: false, phobia: false, paid: false, is3D: true, isPopular: false },
-      details: "광활한 우주 영상을 감상하며 즐기는 몰입형 시어터 시설입니다."
+      details: "광활한 우주 영상을 감상하며 즐기는 몰입형 시어터 시설입니다. 좌석의 움직임은 진동 제외 거의 존재하지 않습니다."
     },
     // 3F
     { 
-      id: 4, name: "콩 X 고질라: 더 라이드", location: "어드벤처 3F", type: "다이나믹 라이드", category: "체험", 
+      id: 4, name: "콩 X 고질라: 더 라이드", location: "어드벤처 3F", type: "다이나믹 라이드", category: "다크라이드", 
       fun: "?", thrill: "?", wait: "?", 
       description: "거대 괴수들의 전쟁 한복판으로 뛰어드는 압도적 스케일의 라이드.",
       tags: ["예정", "괴수", "블록버스터"], 
