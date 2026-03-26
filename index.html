@@ -3,22 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOTTE WORLD INSIGHT</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <title>롯데월드 인사이트</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
 </head>
-<body>
+<body class="bg-slate-50">
     <div id="root"></div>
 
     <script type="text/babel">
-        // 님이 작성하신 React 코드를 브라우저용으로 살짝 변형
-        const { useState } = React;
-        // 아이콘 컴포넌트들을 미리 정의 (Lucide 사용법 대응)
+        const { useState, useEffect } = React;
+
+        // 아이콘을 쉽게 쓰기 위한 컴포넌트
         const Icon = ({ name, size = 16, className = "" }) => {
-            return <i data-lucide={name} style={{ width: size, height: size }} className={className}></i>;
+            return <i data-lucide={name} style={{ width: size, height: size }} className={`inline-block ${className}`}></i>;
         };
 
         const App = () => {
@@ -27,49 +32,67 @@
             const [selectedCategory, setSelectedCategory] = useState('전체');
             const [expandedId, setExpandedId] = useState(null);
 
-            // --- 님이 주신 데이터 그대로 유지 ---
-            const categories = ['전체', '스릴', '패밀리', '롤러코스터', '키즈', '다크라이드', '체험', '시어터', '슈팅', '모노레일'];
-            const locations = ['전체', '어드벤처 4F', '어드벤처 3F', '어드벤처 2F', '어드벤처 1F', '언더랜드(B1)', '키디존', '매직아일랜드', '메이플 아일랜드'];
+            // 님이 작성하신 데이터 (아트란티스, 파라오 등)
             const rides = [
-                { id: 1, name: "파라오의 분노", location: "어드벤처 4F", category: "다크라이드", fun: 4.5, thrill: 3.5, wait: 5, description: "정교한 이집트 신전 내부를 지프차로 탐험하는 모험.", tags: ["가족", "어드벤처"], height: "110cm 이상", info: { isPopular: true }, details: "점검 시간 확인 필요." },
-                { id: 7, name: "후렌치 레볼루션", location: "어드벤처 2F", category: "스릴", fun: 4.5, thrill: 4.5, wait: 4.5, description: "360도 회전 코스터.", info: { isPopular: true, reservation: true }, height: "120cm 이상" },
-                { id: 35, name: "아트란티스", location: "매직아일랜드", category: "스릴", fun: 5, thrill: 5, wait: 5, description: "시속 72km 급발진 코스터.", info: { isPopular: true, reservation: true }, height: "135cm ~ 190cm" }
-                // ... 나머지 데이터도 여기에 넣으시면 됩니다.
+                { id: 1, name: "파라오의 분노", location: "어드벤처 4F", category: "다크라이드", fun: 4.5, thrill: 3.5, wait: 5, description: "지프차를 타고 떠나는 이집트 모험.", tags: ["가족", "어드벤처"], height: "110cm 이상", info: { isPopular: true } },
+                { id: 7, name: "후렌치 레볼루션", location: "어드벤처 2F", category: "스릴", fun: 4.5, thrill: 4.5, wait: 4.5, description: "실내 360도 회전 코스터.", tags: ["싱글라이더", "인기"], height: "120cm 이상", info: { isPopular: true, reservation: true } },
+                { id: 11, name: "후룸라이드", location: "어드벤처 1F", category: "스릴", fun: 4.5, thrill: 3, wait: 4.5, description: "통나무 배 급류 타기.", tags: ["물튐주의"], height: "110cm 이상", info: { isPopular: true, reservation: true } },
+                { id: 35, name: "아트란티스", location: "매직아일랜드", category: "스릴", fun: 5, thrill: 5, wait: 5, description: "시속 72km 급발진 코스터.", tags: ["최고인기", "예약제"], height: "135cm ~ 190cm", info: { isPopular: true, reservation: true } }
+                // (공간상 주요 데이터만 넣었습니다. 님의 App.jsx 데이터를 여기에 복사해 넣으셔도 됩니다)
             ];
 
-            // 필터링 로직
-            const filteredRides = rides.filter(ride => {
-                const matchesSearch = ride.name.includes(searchTerm);
-                const matchesLocation = selectedLocation === '전체' || ride.location.includes(selectedLocation);
-                const matchesCategory = selectedCategory === '전체' || ride.category === selectedCategory;
-                return matchesSearch && matchesLocation && matchesCategory;
-            });
+            const categories = ['전체', '스릴', '패밀리', '롤러코스터', '키즈', '다크라이드'];
 
-            // 아이콘 렌더링을 위한 처리
-            React.useEffect(() => {
-                lucide.createIcons();
-            }, [expandedId, filteredRides]);
+            const filteredRides = rides.filter(ride => 
+                ride.name.includes(searchTerm) && 
+                (selectedCategory === '전체' || ride.category === selectedCategory)
+            );
+
+            // 아이콘 렌더링을 위한 설정
+            useEffect(() => { lucide.createIcons(); }, [expandedId, filteredRides]);
 
             return (
-                <div className="min-h-screen bg-slate-50 pb-10">
-                    <header className="bg-white p-4 sticky top-0 z-10 border-b">
-                        <h1 className="text-xl font-black text-red-500 mb-4">LOTTE WORLD INSIGHT</h1>
+                <div className="max-w-md mx-auto min-h-screen bg-white shadow-lg">
+                    <div className="p-6 border-b sticky top-0 bg-white z-10">
+                        <div className="flex items-center gap-2 mb-4">
+                            <div className="w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center text-white font-black">L</div>
+                            <h1 className="text-xl font-black">LOTTE WORLD</h1>
+                        </div>
                         <input 
-                            className="w-full p-3 bg-slate-100 rounded-xl outline-none" 
-                            placeholder="검색..." 
-                            onChange={(e) => setSearchTerm(e.target.value)} 
+                            className="w-full p-3 bg-slate-100 rounded-xl outline-none text-sm" 
+                            placeholder="기구 이름 검색..." 
+                            onChange={(e) => setSearchTerm(e.target.value)}
                         />
-                    </header>
+                    </div>
+
                     <div className="p-4 space-y-4">
                         {filteredRides.map(ride => (
-                            <div key={ride.id} className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100" onClick={() => setExpandedId(expandedId === ride.id ? null : ride.id)}>
+                            <div key={ride.id} className="border rounded-2xl p-4 cursor-pointer hover:border-red-300 transition-all" onClick={() => setExpandedId(expandedId === ride.id ? null : ride.id)}>
                                 <div className="flex justify-between items-center">
-                                    <h3 className="font-bold text-lg">{ride.name} {ride.info?.isPopular && '🔥'}</h3>
+                                    <div>
+                                        <span className="text-[10px] text-slate-400 font-bold uppercase">{ride.location}</span>
+                                        <h3 className="font-bold text-lg">{ride.name} {ride.info.isPopular && '🔥'}</h3>
+                                    </div>
                                     <Icon name={expandedId === ride.id ? "chevron-up" : "chevron-down"} />
                                 </div>
-                                <p className="text-sm text-slate-500 mt-1">{ride.description}</p>
                                 {expandedId === ride.id && (
-                                    <div className="mt-4 p-3 bg-slate-50 rounded-lg text-xs leading-relaxed">
-                                        <p>📍 위치: {ride.location}</p>
-                                        <p>📏 키 제한: {ride.height}</p>
-                                        <p className="mt
+                                    <div className="mt-4 pt-4 border-t text-sm text-slate-600 animate-in fade-in duration-300">
+                                        <p className="mb-2">{ride.description}</p>
+                                        <div className="bg-slate-50 p-3 rounded-xl flex gap-4">
+                                            <div><p className="text-[10px] font-bold text-slate-400">THRILL</p><p className="font-bold text-purple-600">{ride.thrill}/5</p></div>
+                                            <div><p className="text-[10px] font-bold text-slate-400">WAIT</p><p className="font-bold text-red-500">{ride.wait}/5</p></div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
