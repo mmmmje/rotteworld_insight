@@ -370,10 +370,10 @@ const App = () => {
       details: "별도 요금이 발생합니다."
     },
     { 
-      id: 42, name: "혜성특급", location: "매직아일랜드", type: "회전 코스터", category: "스릴", 
+      id: 42, name: "혜성특급", location: "매직아일랜드", type: "회전 코스터", category: "롤러코스터", 
       fun: 4.5, thrill: 3.5, wait: 4.5, 
       description: "어두운 우주 공간을 회전하며 질주하는 환상적인 코스터.",
-      tags: ["인기기구", "우주"], 
+      tags: ["인기기구", "우주", "물품보관함"], 
       height: "120cm 이상", weight: null,
       info: { reservation: true, single: false, kidsOnly: false, phobia: false, paid: false, is3D: false, isPopular: true },
       details: "의자가 뱅글뱅글 돕니다."
@@ -395,7 +395,7 @@ const App = () => {
       tags: ["오픈예정", "메이플스토리", "가족형"], 
       height: "준비 중", weight: null,
       info: { isPlanned: true, reservation: false, single: false, kidsOnly: false, phobia: false, paid: false, is3D: false, isPopular: false },
-      details: "가족 타겟의 경쾌한 주행을 기대할 수 있습니다."
+      details: "가족 타겟의 경쾌한 주행을 기대할 수 있습니다. 스릴은 낮을 걸로 보입니다."
     },
     { 
       id: 101, name: "에오스 타워", location: "메이플 아일랜드", type: "타워 라이드", category: "스릴", 
@@ -404,16 +404,16 @@ const App = () => {
       tags: ["오픈예정", "타워", "드롭"], 
       height: "준비 중", weight: null,
       info: { isPlanned: true, reservation: false, single: false, kidsOnly: false, phobia: true, paid: false, is3D: false, isPopular: false },
-      details: "에오스 탑을 모티브로 한 스릴 넘치는 드롭 시설입니다."
+      details: "에오스 탑을 모티브로 한 넘치는 드롭 시설입니다. 스릴은 낮을 걸로 보입니다."
     },
     { 
-      id: 102, name: "아르카나 라이드", location: "메이플 아일랜드", type: "보트 라이드", category: "다크라이드", 
+      id: 102, name: "아르카나 라이드", location: "메이플 아일랜드", type: "보트 라이드", category: "스피드웨이(회전 보트)", 
       fun: "?", thrill: "?", wait: "?", 
-      description: "신비로운 정령의 숲 아르카나를 보트를 타고 탐험하는 다크라이드.",
+      description: "신비로운 정령의 숲 아르카나를 보트를 타고 도는 보트 라이드.",
       tags: ["오픈예정", "아르카나", "탐험"], 
       height: "준비 중", weight: null,
       info: { isPlanned: true, reservation: false, single: false, kidsOnly: false, phobia: false, paid: false, is3D: false, isPopular: false },
-      details: "환상적인 정령의 숲 비주얼을 선보일 예정입니다."
+      details: "보트를 타고 계속 좌우로 회전하는 보트 라이드입니다. 스릴은 낮을 걸로 보입니다."
     }
   ];
 
