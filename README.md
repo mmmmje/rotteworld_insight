@@ -215,22 +215,22 @@ const App = () => {
     },
     // 언더랜드 B1
     { 
-      id: 23, name: "와일드 윙/정글/밸리", location: "언더랜드(B1)", type: "4D 라이드", category: "체험", 
+      id: 23, name: "와일드 윙/정글/밸리", location: "언더랜드(B1)", type: "4D 라이드", category: "패밀리", 
       fun: 4, thrill: 2.5, wait: 3, 
       description: "지프, 비행기, 보트를 타고 정글과 하늘, 계곡을 질주하는 4D 모험.",
-      tags: ["4D", "모험", "언더랜드"], 
+      tags: ["4D", "모험"], 
       height: "110cm 이상", weight: null,
       info: { reservation: false, single: false, kidsOnly: false, phobia: false, paid: false, is3D: true, isPopular: false },
-      details: "언더랜드의 대표 라이드입니다."
+      details: "언더랜드의 대표 라이드입니다. 중고등학생도 즐길 수 있습니다. 강한 진동이 있습니다."
     },
     { 
-      id: 24, name: "4D 슈팅어드벤처", location: "언더랜드(B1)", type: "슈팅 라이드", category: "체험", 
+      id: 24, name: "4D 슈팅어드벤처", location: "언더랜드(B1)", type: "슈팅 라이드", category: "슈팅", 
       fun: 3.5, thrill: 1.5, wait: 2, 
       description: "화면 속 적들을 향해 총을 쏘는 실감나는 슈팅 게임.",
       tags: ["슈팅", "4D"], 
       height: "110cm 이상", weight: null,
       info: { reservation: false, single: false, kidsOnly: false, phobia: false, paid: false, is3D: true, isPopular: false },
-      details: "순위가 발표됩니다."
+      details: "순위가 발표됩니다. 4D 안경과 총을 지급해줍니다."
     },
     // 키디존
     { 
@@ -298,9 +298,9 @@ const App = () => {
     },
     { 
       id: 32, name: "어린이 동화극장", location: "키디존", type: "공연장", category: "키즈", 
-      fun: 4, thrill: 0, wait: 1, 
+      fun: 4, thrill: 0, wait: 2, 
       description: "로티, 로리와 친구들이 들려주는 동화 이야기.",
-      tags: ["공연", "인형극"], 
+      tags: ["공연", "인형극", "동화"], 
       height: "전연령", weight: null,
       info: { reservation: false, single: false, kidsOnly: true, phobia: false, paid: false, is3D: false, isPopular: false },
       details: "공연 시간을 확인하세요."
